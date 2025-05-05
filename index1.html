@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Palette Generator</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  </head>
+  <body>
+    <div class="header-bar">Color Palette Generator</div>
+    <div class="container">
+      <div class="color-selection-section unified-card">
+        <h2 style="margin-top:0;margin-bottom:18px;font-size:1.25em;font-weight:700;letter-spacing:0.5px;">Color Selection</h2>
+        <div class="color-selection-row">
+          <label style="font-weight:600; font-size:1.08em; margin-right:10px;">Base Color:</label>
+          <input type="color" id="base-color" value="#44744d" />
+          <input type="text" id="color-value" placeholder="#44744d" style="margin-right:24px;" />
+          <label style="font-weight:600; font-size:1.08em; margin-right:10px;">Pick from Image:</label>
+          <input type="file" id="image-upload" accept="image/*" style="display:none;">
+          <button id="custom-file-btn" type="button">Choose Image</button>
+          <span id="file-name" style="font-size:0.98em; color:#555; margin-left:8px;"></span>
+          <canvas id="image-canvas" width="180" height="120" style="border: 1px solid #ccc; border-radius: 6px; background: #fff; display: none; margin-left:18px;"></canvas>
+          <div id="picked-color-info" style="display: none; align-items: center; gap: 10px; flex-direction: column; margin-left: 18px;">
+            <div id="picked-color-preview" style="width: 40px; height: 40px; border-radius: 8px; border: 1px solid #aaa;"></div>
+            <div id="picked-color-hex" style="font-family: monospace; font-size: 1.1em; margin: 6px 0;"></div>
+            <button id="copy-picked-color">Copy Color</button>
+          </div>
+        </div>
+      </div>
+      <button id="download-png" style="margin-bottom: 20px;">Download Palette as PNG</button>
+      <div id="palette">
+        <div id="palette-capture">
+          <button id="shuffle-shades" style="margin-bottom: 10px;">🔀 Shuffle Shades</button>
+          <div class="scheme-section">
+            <h2>Shades & Tints</h2>
+            <div class="colors-container" id="shades"></div>
+          </div>
+          <div class="scheme-row">
+            <div class="scheme-section">
+              <h2>Complementary</h2>
+              <div class="colors-container" id="complementary"></div>
+            </div>
+            <div class="scheme-section">
+              <h2>Analogous</h2>
+              <div class="colors-container" id="analogous"></div>
+            </div>
+            <div class="scheme-section">
+              <h2>Triadic</h2>
+              <div class="colors-container" id="triadic"></div>
+            </div>
+          </div>
+          <div class="scheme-section">
+            <h2>Saturation Variations</h2>
+            <div class="colors-container" id="saturation"></div>
+          </div>
+          <div class="scheme-section">
+            <h2>Monochromatic (Soft Tone)</h2>
+            <div class="colors-container" id="monochromatic"></div>
+          </div>
+          <div class="scheme-section pastel-colors">
+            <h2>Pastel Colors</h2>
+            <div class="colors-container" id="pastels"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contrast Checker Section -->
+      <div class="typo-contrast-row">
+        <div class="scheme-section" id="contrast-checker-section">
+          <h2>Contrast Checker</h2>
+          <div class="contrast-row">
+            <label class="contrast-label">Color 1: <input type="color" id="contrast-color-1" value="#222222"></label>
+            <label class="contrast-label">Color 2: <input type="color" id="contrast-color-2" value="#ffffff"></label>
+            <button id="swap-contrast-colors" title="Swap colors">⇄</button>
+          </div>
+          <div id="contrast-result"></div>
+          <div class="contrast-divider"></div>
+          <div id="contrast-preview">
+            <div class="contrast-preview-block" id="contrast-normal-text">Normal text preview</div>
+            <div class="contrast-preview-block large" id="contrast-large-text">Large text preview</div>
+          </div>
+        </div>
+        <div class="scheme-section" id="typography-preview-section">
+          <h2>Typography Preview</h2>
+          <div id="typography-preview-content"></div>
+        </div>
+      </div>
+      <!-- Gradient Generator Section -->
+      <div class="scheme-section" id="gradient-generator-section" style="margin-top: 30px;">
+        <h2>Gradient Generator</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px;">
+          <label>Type:
+            <select id="gradient-type">
+              <option value="linear">Linear</option>
+              <option value="radial">Radial</option>
+            </select>
+          </label>
+          <label id="gradient-direction-label">Direction:
+            <select id="gradient-direction">
+              <option value="to right">Left → Right</option>
+              <option value="to left">Right → Left</option>
+              <option value="to bottom">Top → Bottom</option>
+              <option value="to top">Bottom → Top</option>
+              <option value="135deg">Diagonal ↘</option>
+              <option value="45deg">Diagonal ↗</option>
+            </select>
+          </label>
+          <label id="gradient-angle-label" style="display:none;">Angle:
+            <input type="number" id="gradient-angle" min="0" max="360" value="90" style="width:60px;">°
+          </label>
+          <button id="add-gradient-color">+ Color</button>
+          <button id="remove-gradient-color">- Color</button>
+        </div>
+        <div id="gradient-colors" style="display: flex; gap: 10px; margin-bottom: 15px;"></div>
+        <div id="gradient-preview" style="height: 80px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #ddd;"></div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <input type="text" id="gradient-css" readonly style="flex:1; padding: 5px; font-size: 0.95em;">
+          <button id="copy-gradient-css">Copy CSS</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="copy-notification" class="copy-notification">Copied to clipboard!</div>
+    <script src="script.js"></script>
+  </body>
+</html>
